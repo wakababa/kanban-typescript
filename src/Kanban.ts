@@ -1,10 +1,10 @@
 import KanbanPartition from "./models/KanbanPartition";
 import KanbanData from "./models/KanbanData";
 interface IKanban{
-    store:Array<KanbanPartition>
+    getStore():Array<KanbanPartition>
 }
 class Kanban implements IKanban{
-    store:KanbanPartition[]
+    private store:KanbanPartition[]
     constructor() {
         this.store = <KanbanPartition[]>[]
     }
@@ -22,22 +22,24 @@ class Kanban implements IKanban{
         return newPartition
     }
 
-    getPartition(key:string) {
+    getPartition(key:string | undefined) : KanbanPartition | undefined {
         return this.store.find(p => p.key === key)
     }
-    moveData(toPartition :string,data:KanbanData){
-        const copyStore = this.store
-        const toIndex = this.store.findIndex(store=>store.name ===toPartition)
-        copyStore[toIndex].data =[...copyStore[toIndex].data,data]
-        this.store = copyStore
+
+    getAllPartitionName() : string[] {
+        return this.store.map(p => p.name)
     }
-    editData(partitionName:string,data:KanbanData){
-        const copyStore = this.store
-        const index = this.store.findIndex(store=>store.name ===partitionName)
-        const dataIndex = copyStore[index].data.findIndex(d=>d.getId() === data.getId())
-        copyStore[index].data[dataIndex] =data
-        this.store = copyStore
+
+    getStore(): Array<KanbanPartition> {
+        return this.store
     }
+
+    moveData(fromPartition: string, toPartition :string,data:KanbanData){
+        this.getPartition(fromPartition)?.removeData(data.getId())
+        this.getPartition(toPartition)?.appendData(data)
+
+    }
+
 }
 
 export default Kanban

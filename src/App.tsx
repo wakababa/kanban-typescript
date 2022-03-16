@@ -57,7 +57,6 @@ const Modal=({data,partition,onClose,update} :ModalProps )  =>{
             data.setDescription(editDescription)
             data.setIssueType(editIssueType)
             data.setPriority(editPriority)
-            kanban.editData(partition.name,data)
             update()
             onClose()
 
@@ -96,16 +95,15 @@ const Settings =({data,partition,update}:SettingsProps)=>{
   return(
       <div key={data.getId()} style={{backgroundColor:"#d0cece",display:"flex",justifyContent:"space-between",padding:1,marginBottom:5}}>
         <select value={partition.name} onChange={(e)=> {
-          partition.removeData(data.getId())
-          kanban.moveData(e.target.value,data)
+          kanban.moveData(partition.name, e.target.value,data)
           update()
         }}>
-          {  kanban.store.map((part,key)=>{
+          {  kanban.getAllPartitionName().map((name,key)=>{
             return(
                 <option
                     key={key}
-                    value={part.name}>
-                  {part.name}
+                    value={name}>
+                  {name}
                 </option>
             )
           })}
@@ -135,7 +133,7 @@ function App() {
   return (
       <div className="App">
         <div style={{display: "flex",padding:2}}>
-          {kanban.store.map((partition,key) =>
+          {kanban.getStore().map((partition,key) =>
               <div key={key} style={{border: "1px solid black", padding: 5,width:"100%",marginBottom:5,height:"94vh"}}>
                 <div style={{display:"flex",flexDirection:"row",justifyContent:"space-between",alignItems:"center"}}>
                   <h2 style={{backgroundColor:"#e7e7e7",width:"100%"}}>{partition.name.toUpperCase()}</h2>
